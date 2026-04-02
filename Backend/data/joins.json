@@ -1,0 +1,16 @@
+[
+  {
+    "id": "8efa7d00-c7f3-44d6-9dbc-74596a8a3d1e",
+    "eventId": "cc8e43ce-f45f-4b81-b52b-fb410a3b4d89",
+    "participantId": "8e982f20-8b01-4f78-9aba-950e0c8f6e9d",
+    "shift": "Afternoon",
+    "joinedAt": "2026-03-23T19:19:45.291Z"
+  },
+  {
+    "id": "2c21905f-dac1-4a7b-8e54-d800db8e8b97",
+    "eventId": "012f2c58-895c-4885-8c86-d2f0d7694f9d",
+    "participantId": "8e982f20-8b01-4f78-9aba-950e0c8f6e9d",
+    "shift": "Night",
+    "joinedAt": "2026-03-23T19:22:19.017Z"
+  }
+]

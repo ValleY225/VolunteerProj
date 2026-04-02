@@ -1,0 +1,20 @@
+[
+  {
+    "id": "b582b90b-ebfb-4335-a5e3-84691b7fb990",
+    "name": "Yera",
+    "region": "Almaty",
+    "birthDate": "1993-06-21",
+    "role": "Coordinator",
+    "photoUrl": "/uploads/1774292067720-8ab72c13-618c-48f3-aa87-d842baf68d3c.png",
+    "createdAt": "2026-03-23T18:54:27.744Z"
+  },
+  {
+    "id": "8e982f20-8b01-4f78-9aba-950e0c8f6e9d",
+    "name": "Holden",
+    "region": "Almaty",
+    "birthDate": "2005-07-25",
+    "role": "Participant",
+    "photoUrl": "/uploads/1774292184376-c649869a-dd5f-4ff4-ad1f-9e7981773ae6.jpg",
+    "createdAt": "2026-03-23T18:56:24.382Z"
+  }
+]

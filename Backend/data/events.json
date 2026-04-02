@@ -1,0 +1,22 @@
+[
+  {
+    "id": "cc8e43ce-f45f-4b81-b52b-fb410a3b4d89",
+    "name": "Marathon at floor",
+    "description": "REGISTER NOW!!!!",
+    "region": "Almaty",
+    "photoUrl": "/uploads/1774293564926-fcc92386-10c1-4090-ae70-fcbb5831c208.jpg",
+    "coordinatorId": "b582b90b-ebfb-4335-a5e3-84691b7fb990",
+    "createdAt": "2026-03-23T19:19:24.937Z",
+    "updatedAt": "2026-03-23T19:19:28.533Z"
+  },
+  {
+    "id": "012f2c58-895c-4885-8c86-d2f0d7694f9d",
+    "name": "Wages",
+    "description": "Hodkdjwgojigj",
+    "region": "Almaty",
+    "photoUrl": "/uploads/1774293700849-60c6c983-efe2-429c-9752-96b267caaae7.jpg",
+    "coordinatorId": "b582b90b-ebfb-4335-a5e3-84691b7fb990",
+    "createdAt": "2026-03-23T19:21:40.854Z",
+    "updatedAt": "2026-03-23T19:21:49.468Z"
+  }
+]
