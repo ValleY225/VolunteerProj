@@ -36,6 +36,8 @@
   - `https://projmanage-api.valliera27.workers.dev`
 - Frontend Pages:
   - `https://projmanage-frontend.pages.dev`
+- Latest preview deployment (changes each deploy):
+  - `https://2d7a05e9.projmanage-frontend.pages.dev`
 
 Detailed deployment notes:
 - `CLOUDFLARE_DEPLOY.md`
@@ -93,8 +95,27 @@ npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY
 cd Frontend
 $env:VITE_API_BASE="https://projmanage-api.valliera27.workers.dev"
 npm run build
-npx wrangler pages deploy dist --project-name projmanage-frontend
+npx wrangler pages deploy dist --project-name projmanage-frontend --branch main
 ```
+
+PowerShell note:
+- Use `;` to chain commands, not `&&`.
+- Example:
+
+```powershell
+$env:VITE_API_BASE="https://projmanage-api.valliera27.workers.dev"; npm run build; if ($LASTEXITCODE -eq 0) { npx wrangler pages deploy dist --project-name projmanage-frontend --branch main }
+```
+
+## Quick production verification
+
+```powershell
+curl.exe -s "https://projmanage-api.valliera27.workers.dev/api/health"
+curl.exe -I "https://projmanage-frontend.pages.dev"
+```
+
+Expected:
+- API returns `{"ok":true}`
+- Frontend returns `HTTP/1.1 200 OK`
 
 ## Important notes
 

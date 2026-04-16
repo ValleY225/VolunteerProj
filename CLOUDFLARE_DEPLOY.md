@@ -49,7 +49,7 @@ Set frontend API URL for production:
 
 ```bash
 # PowerShell
-$env:VITE_API_BASE="https://<your-worker-subdomain>.workers.dev"
+$env:VITE_API_BASE="https://projmanage-api.valliera27.workers.dev"
 npm run build
 ```
 
