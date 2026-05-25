@@ -8,8 +8,8 @@ These are development-only accounts created for local testing.
 
 ## Coordinators (Almaty)
 
-- `coord1.almaty.2026@mail.ms`
-- `coord2.almaty.2026@mail.ms`
+
+
 
 ## Participants (Almaty)
 
