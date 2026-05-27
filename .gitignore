@@ -1,4 +1,45 @@
+# Dependencies
 Backend/node_modules/
+Frontend/node_modules/
+node_modules/
+
+# Build outputs
+Frontend/dist/
+Frontend/build/
+Backend/dist/
+
+# Uploads
+Backend/uploads/
+
+# Environment variables - НЕ КОММИТИТЬ!
+.env
+.env.local
+.env.*.local
+.env.production
+.env.development
+*.env
+*.env.local
+Backend/.env
+Backend/.env.local
+Frontend/.env
+Frontend/.env.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+*.log
+
+# Temp files
+*.tmp
+*.temp
+material%Backend/node_modules/
 Frontend/node_modules/
 Frontend/dist/
 Backend/uploads/

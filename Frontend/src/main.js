@@ -19,6 +19,37 @@ let preferredRole = null;
 let selectedChatGroupId = null;
 const pendingChatMessagesByGroup = new Map();
 
+// Слушаем событие от React
+window.addEventListener('userChanged', (event) => {
+  const user = event.detail;
+  console.log('User changed from React:', user);
+  
+  if (user) {
+    currentUser = user;
+    currentPage = "dashboard";
+    render();
+  } else {
+    currentUser = null;
+    currentMode = "login";
+    render();
+  }
+});
+
+// Также слушаем прямые изменения localStorage (на всякий случай)
+window.addEventListener('storage', (event) => {
+  if (event.key === 'ngo_current_user') {
+    console.log('localStorage changed by another tab/window');
+    if (event.newValue) {
+      currentUser = JSON.parse(event.newValue);
+      currentPage = "dashboard";
+    } else {
+      currentUser = null;
+      currentMode = "login";
+    }
+    render();
+  }
+});
+
 render();
 
 function render() {

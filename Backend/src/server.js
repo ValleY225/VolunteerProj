@@ -7,7 +7,7 @@ const { createClient } = require("@supabase/supabase-js");
 const { randomUUID, createHash } = require("crypto");
 const dotenv = require("dotenv");
 
-dotenv.config({ path: path.join(__dirname, "..", "..", ".env.local") });
+dotenv.config({ path: path.join(__dirname, "..", ".env.local") });
 
 const app = express();
 const PORT = 4000;
@@ -77,6 +77,7 @@ function mapEventRow(row, coordinatorName = "Unknown Coordinator") {
     photoUrl: row.photo_url,
     coordinatorId: row.coordinator_id,
     coordinatorName,
+    shifts: row.shifts || null, // ← ДОБАВИТЬ ЭТУ СТРОКУ
     createdAt: row.created_at,
     updatedAt: row.updated_at || null,
   };
@@ -448,7 +449,7 @@ app.get(["/api/events", "/api/items"], async (_req, res) => {
 
 app.post(["/api/events", "/api/items"], upload.single("photo"), async (req, res) => {
   try {
-    const { name, description, region, coordinatorId } = req.body;
+    const { name, description, region, coordinatorId, shifts } = req.body;
     if (!name || !description || !region || !coordinatorId) {
       return res.status(400).json({ message: "All event fields are required." });
     }
@@ -471,6 +472,7 @@ app.post(["/api/events", "/api/items"], upload.single("photo"), async (req, res)
       region,
       photo_url: `/uploads/${req.file.filename}`,
       coordinator_id: coordinatorId,
+      shifts: shifts || null,
       created_at: new Date().toISOString(),
     };
     const { data, error } = await supabase.from("events").insert(insert).select("*").single();
@@ -479,7 +481,8 @@ app.post(["/api/events", "/api/items"], upload.single("photo"), async (req, res)
       message: "Event created successfully.",
       event: mapEventRow(data, coordinatorResult.data.name),
     });
-  } catch {
+  } catch (error) {
+    console.error('Create event error:', error);
     return res.status(500).json({ message: "Failed to create event." });
   }
 });
@@ -488,16 +491,24 @@ app.post(["/api/events/:eventId/join", "/api/items/:eventId/join"], async (req, 
   try {
     const { eventId } = req.params;
     const { participantId, shift, formAnswers } = req.body;
+    
+    console.log('Join request received:', { eventId, participantId, shift }); // ОТЛАДКА
+    
     if (!participantId || !shift) {
       return res.status(400).json({ message: "Participant and shift are required." });
     }
-    if (!ALLOWED_SHIFTS.includes(shift)) return res.status(400).json({ message: "Invalid shift selected." });
 
     const [eventResult, userResult] = await Promise.all([
       supabase.from("events").select("id").eq("id", eventId).single(),
       supabase.from("users").select("id,role").eq("id", participantId).single(),
     ]);
-    if (eventResult.error || !eventResult.data) return res.status(404).json({ message: "Event not found." });
+    
+    console.log('Event result:', eventResult);
+    console.log('User result:', userResult);
+    
+    if (eventResult.error || !eventResult.data) {
+      return res.status(404).json({ message: "Event not found." });
+    }
     if (userResult.error || !["Participant", "Coordinator"].includes(userResult.data?.role)) {
       return res.status(400).json({ message: "Only Participant or Coordinator can join events." });
     }
@@ -508,38 +519,57 @@ app.post(["/api/events/:eventId/join", "/api/items/:eventId/join"], async (req, 
       .eq("event_id", eventId)
       .eq("participant_id", participantId)
       .maybeSingle();
+    
+    console.log('Existing join:', existingResult);
+
     if (existingResult.error) throw existingResult.error;
 
+    const now = new Date().toISOString();
+    const joinData = {
+      shift: String(shift),
+      form_answers: formAnswers || null,
+      status: "pending",
+      requested_at: now,
+    };
+
     if (existingResult.data) {
-      const { error } = await supabase
+      const { error, data } = await supabase
         .from("joins")
-        .update({
-          shift,
-          form_answers: formAnswers || null,
-          status: "pending",
-          requested_at: new Date().toISOString(),
-          decided_at: null,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", existingResult.data.id);
+        .update({ ...joinData, decided_at: null, updated_at: now })
+        .eq("id", existingResult.data.id)
+        .select();
+      
+      console.log('Update result:', { error, data });
       if (error) throw error;
       return res.json({ message: "Join request updated and sent for review." });
     }
 
-    const { error } = await supabase.from("joins").insert({
+    const insertData = {
       id: randomUUID(),
       event_id: eventId,
       participant_id: participantId,
-      shift,
-      form_answers: formAnswers || null,
-      status: "pending",
-      joined_at: new Date().toISOString(),
-      requested_at: new Date().toISOString(),
-    });
+      ...joinData,
+      joined_at: now,
+    };
+    
+    console.log('Insert data:', insertData);
+    
+    const { error, data } = await supabase
+      .from("joins")
+      .insert(insertData)
+      .select();
+    
+    console.log('Insert result:', { error, data });
+    
     if (error) throw error;
     return res.json({ message: "Join request sent. Waiting for coordinator decision." });
+    
   } catch (error) {
-    return res.status(500).json({ message: mapJoinSchemaError(error, "Failed to join event.") });
+    console.error('Join error details:', error);
+    return res.status(500).json({ 
+      message: "Failed to join event: " + (error.message || "Unknown error"),
+      details: error.message 
+    });
   }
 });
 
